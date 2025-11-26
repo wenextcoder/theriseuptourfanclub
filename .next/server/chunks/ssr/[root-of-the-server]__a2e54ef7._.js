@@ -1,0 +1,3 @@
+module.exports=[79251,a=>{a.v({className:"montserrat_bba129a6-module__TUV0iq__className",variable:"montserrat_bba129a6-module__TUV0iq__variable"})},27572,a=>{"use strict";var b=a.i(7997),c=a.i(79251);let d={className:c.default.className,style:{fontFamily:"'Montserrat', 'Montserrat Fallback'",fontStyle:"normal"}};function e({children:a}){return(0,b.jsx)("html",{lang:"en",children:(0,b.jsx)("body",{className:`${d.variable} font-sans antialiased`,children:a})})}null!=c.default.variable&&(d.variable=c.default.variable),a.s(["default",()=>e,"metadata",0,{title:"The RISEUP Tour Fan Club",description:"Membership Application Form"}],27572)}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__a2e54ef7._.js.map

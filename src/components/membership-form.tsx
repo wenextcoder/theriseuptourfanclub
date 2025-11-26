@@ -28,6 +28,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { DatePicker } from "@/components/ui/date-picker"
+import { SegmentedDateInput } from "@/components/ui/segmented-date-input"
+import { PhoneInput } from "@/components/ui/phone-input"
 import { cn } from "@/lib/utils"
 import { Check, ChevronLeft, ChevronRight, CreditCard, User, MapPin, Shirt, Mail, Phone, Map, Building2, Hash, Ticket, UserPlus, CheckCircle2, Star } from "lucide-react"
 
@@ -42,9 +45,14 @@ const formSchema = z.object({
     nickname: z.string().min(1, "Nickname is required (or N/A)"),
     email: z.string().email("Invalid email address"),
     phone: z.string().regex(phoneRegex, "Invalid phone number"),
-    birthMonth: z.string().min(1, "Month is required"),
-    birthDay: z.string().min(1, "Day is required"),
-    birthYear: z.string().min(1, "Year is required"),
+    birthDate: z.date({
+        message: "Date of birth is required",
+    }).refine((date) => {
+        const age = new Date().getFullYear() - date.getFullYear();
+        return age >= 18 && age <= 120;
+    }, {
+        message: "You must be at least 18 years old",
+    }),
     address1: z.string().min(5, "Address is required"),
     address2: z.string().optional(),
     city: z.string().min(2, "City is required"),
@@ -135,7 +143,7 @@ export function MembershipForm() {
         let fieldsToValidate: any[] = [];
         switch (step) {
             case 1:
-                fieldsToValidate = ["firstName", "lastName", "nickname", "email", "phone", "birthMonth", "birthDay", "birthYear"];
+                fieldsToValidate = ["firstName", "lastName", "nickname", "email", "phone", "birthDate"];
                 break;
             case 2:
                 fieldsToValidate = ["address1", "city", "state", "zipCode", "referralSource", "birthCityState"];
@@ -237,7 +245,14 @@ export function MembershipForm() {
             </div>
 
             <Card className="shadow-2xl border-none overflow-hidden bg-white/90 backdrop-blur-sm">
-                <CardHeader className="text-center space-y-2 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 pb-8 pt-8">
+                <CardHeader className="text-center space-y-4 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 pb-8 pt-8">
+                    <div className="flex justify-center">
+                        <img 
+                            src="/RISEUP.png" 
+                            alt="RISE Fan Club Logo" 
+                            className="h-24 w-auto object-contain"
+                        />
+                    </div>
                     <CardTitle className="text-3xl font-bold text-primary tracking-tight">The RISEUP Tour Fan Club</CardTitle>
                     <CardDescription className="text-lg font-medium">2026 Membership Application</CardDescription>
                 </CardHeader>
@@ -265,7 +280,12 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="First Name" icon={<User className="h-4 w-4" />} {...field} />
+                                                                <FloatingLabelInput 
+                                                                    label="First Name" 
+                                                                    placeholder="John" 
+                                                                    icon={<User className="h-4 w-4" />} 
+                                                                    {...field} 
+                                                                />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -277,7 +297,12 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="Middle Name" icon={<User className="h-4 w-4" />} {...field} />
+                                                                <FloatingLabelInput 
+                                                                    label="Middle Name" 
+                                                                    placeholder="Optional" 
+                                                                    icon={<User className="h-4 w-4" />} 
+                                                                    {...field} 
+                                                                />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -289,9 +314,14 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="Last Name" icon={<User className="h-4 w-4" />} {...field} />
+                                                                <FloatingLabelInput 
+                                                                    label="Last Name" 
+                                                                    placeholder="Doe" 
+                                                                    icon={<User className="h-4 w-4" />} 
+                                                                    {...field} 
+                                                                />
                                                             </FormControl>
-                                                            <FormDescription className="text-xs">Legal name as on Driver License</FormDescription>
+                                                            <FormDescription className="text-xs mt-1">Legal name as on Driver License</FormDescription>
                                                             <FormMessage />
                                                         </FormItem>
                                                     )}
@@ -304,9 +334,14 @@ export function MembershipForm() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <FloatingLabelInput label="Nickname (Badge Name)" icon={<User className="h-4 w-4" />} {...field} />
+                                                            <FloatingLabelInput 
+                                                                label="Nickname (Badge Name)" 
+                                                                placeholder="Your nickname or N/A" 
+                                                                icon={<User className="h-4 w-4" />} 
+                                                                {...field} 
+                                                            />
                                                         </FormControl>
-                                                        <FormDescription className="text-xs">Displayed on badge. No profanity. Put N/A if none.</FormDescription>
+                                                        <FormDescription className="text-xs mt-1">Displayed on badge. No profanity. Put N/A if none.</FormDescription>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -319,7 +354,13 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="Email Address" type="email" icon={<Mail className="h-4 w-4" />} {...field} />
+                                                                <FloatingLabelInput 
+                                                                    label="Email Address" 
+                                                                    type="email" 
+                                                                    placeholder="name@example.com" 
+                                                                    icon={<Mail className="h-4 w-4" />} 
+                                                                    {...field} 
+                                                                />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -331,7 +372,10 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="Phone Number" type="tel" icon={<Phone className="h-4 w-4" />} {...field} />
+                                                                <PhoneInput
+                                                                    value={field.value}
+                                                                    onChange={field.onChange}
+                                                                />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -339,68 +383,26 @@ export function MembershipForm() {
                                                 />
                                             </div>
 
-                                            <div className="space-y-3">
-                                                <FormLabel className="text-base font-semibold">Date of Birth</FormLabel>
-                                                <div className="grid grid-cols-3 gap-4">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="birthMonth"
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                    <FormControl>
-                                                                        <SelectTrigger className="h-14">
-                                                                            <SelectValue placeholder="Month" />
-                                                                        </SelectTrigger>
-                                                                    </FormControl>
-                                                                    <SelectContent>
-                                                                        {months.map((m) => <SelectItem key={m} value={m}>{m}</SelectItem>)}
-                                                                    </SelectContent>
-                                                                </Select>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="birthDay"
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                    <FormControl>
-                                                                        <SelectTrigger className="h-14">
-                                                                            <SelectValue placeholder="Day" />
-                                                                        </SelectTrigger>
-                                                                    </FormControl>
-                                                                    <SelectContent>
-                                                                        {days.map((d) => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                                                                    </SelectContent>
-                                                                </Select>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="birthYear"
-                                                        render={({ field }) => (
-                                                            <FormItem>
-                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                    <FormControl>
-                                                                        <SelectTrigger className="h-14">
-                                                                            <SelectValue placeholder="Year" />
-                                                                        </SelectTrigger>
-                                                                    </FormControl>
-                                                                    <SelectContent>
-                                                                        {years.map((y) => <SelectItem key={y} value={y}>{y}</SelectItem>)}
-                                                                    </SelectContent>
-                                                                </Select>
-                                                                <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
+                                            <FormField
+                                                control={form.control}
+                                                name="birthDate"
+                                                render={({ field }) => (
+                                                    <FormItem className="space-y-3">
+                                                        <FormLabel className="text-base font-semibold">Date of Birth</FormLabel>
+                                                        <FormControl>
+                                                            <SegmentedDateInput
+                                                                value={field.value}
+                                                                onChange={field.onChange}
+                                                                disabled={false}
+                                                            />
+                                                        </FormControl>
+                                                        <FormDescription className="text-xs mt-8">
+                                                            Must be 18 years or older. Enter as MM/DD/YYYY
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
                                         </div>
                                     )}
 
@@ -412,7 +414,12 @@ export function MembershipForm() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <FloatingLabelInput label="Street Address" icon={<MapPin className="h-4 w-4" />} {...field} />
+                                                            <FloatingLabelInput 
+                                                                label="Street Address" 
+                                                                placeholder="123 Main Street" 
+                                                                icon={<MapPin className="h-4 w-4" />} 
+                                                                {...field} 
+                                                            />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -424,7 +431,12 @@ export function MembershipForm() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <FloatingLabelInput label="Address Line 2 (Optional)" icon={<MapPin className="h-4 w-4" />} {...field} />
+                                                            <FloatingLabelInput 
+                                                                label="Address Line 2 (Optional)" 
+                                                                placeholder="Apt, Suite, Floor" 
+                                                                icon={<MapPin className="h-4 w-4" />} 
+                                                                {...field} 
+                                                            />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -437,7 +449,12 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="City" icon={<Building2 className="h-4 w-4" />} {...field} />
+                                                                <FloatingLabelInput 
+                                                                    label="City" 
+                                                                    placeholder="Atlanta" 
+                                                                    icon={<Building2 className="h-4 w-4" />} 
+                                                                    {...field} 
+                                                                />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -449,7 +466,12 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="State/Province" icon={<Map className="h-4 w-4" />} {...field} />
+                                                                <FloatingLabelInput 
+                                                                    label="State/Province" 
+                                                                    placeholder="GA" 
+                                                                    icon={<Map className="h-4 w-4" />} 
+                                                                    {...field} 
+                                                                />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -461,7 +483,12 @@ export function MembershipForm() {
                                                     render={({ field }) => (
                                                         <FormItem>
                                                             <FormControl>
-                                                                <FloatingLabelInput label="Postal/Zip Code" icon={<Hash className="h-4 w-4" />} {...field} />
+                                                                <FloatingLabelInput 
+                                                                    label="Postal/Zip Code" 
+                                                                    placeholder="30303" 
+                                                                    icon={<Hash className="h-4 w-4" />} 
+                                                                    {...field} 
+                                                                />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -477,23 +504,28 @@ export function MembershipForm() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <FloatingLabelInput label="Birth Place (City and State)" icon={<MapPin className="h-4 w-4" />} {...field} />
+                                                            <FloatingLabelInput 
+                                                                label="Birth Place (City and State)" 
+                                                                placeholder="Atlanta, GA" 
+                                                                icon={<MapPin className="h-4 w-4" />} 
+                                                                {...field} 
+                                                            />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
 
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-6">
                                                 <FormField
                                                     control={form.control}
                                                     name="referralSource"
                                                     render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>How did you hear about TRTFC?</FormLabel>
+                                                        <FormItem className="space-y-3">
+                                                            <FormLabel className="text-base font-semibold">How did you hear about TRTFC?</FormLabel>
                                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                                 <FormControl>
-                                                                    <SelectTrigger className="h-14">
+                                                                    <SelectTrigger className="h-14 w-full">
                                                                         <SelectValue placeholder="Select an option" />
                                                                     </SelectTrigger>
                                                                 </FormControl>
@@ -516,7 +548,12 @@ export function MembershipForm() {
                                                         render={({ field }) => (
                                                             <FormItem>
                                                                 <FormControl>
-                                                                    <FloatingLabelInput label="Referred by (Member Name)" icon={<UserPlus className="h-4 w-4" />} {...field} />
+                                                                    <FloatingLabelInput 
+                                                                        label="Referred by (Member Name)" 
+                                                                        placeholder="Member's full name" 
+                                                                        icon={<UserPlus className="h-4 w-4" />} 
+                                                                        {...field} 
+                                                                    />
                                                                 </FormControl>
                                                                 <FormMessage />
                                                             </FormItem>
@@ -673,11 +710,14 @@ export function MembershipForm() {
                                                     control={form.control}
                                                     name="shirtSize"
                                                     render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Shirt Size (Unisex)</FormLabel>
+                                                        <FormItem className="space-y-3">
+                                                            <FormLabel className="text-base font-semibold flex items-center gap-2">
+                                                                <Shirt className="h-4 w-4 text-primary" />
+                                                                Shirt Size (Unisex)
+                                                            </FormLabel>
                                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                                 <FormControl>
-                                                                    <SelectTrigger className="h-14">
+                                                                    <SelectTrigger className="h-14 w-full">
                                                                         <SelectValue placeholder="Select Size" />
                                                                     </SelectTrigger>
                                                                 </FormControl>
@@ -693,11 +733,14 @@ export function MembershipForm() {
                                                     control={form.control}
                                                     name="jacketSize"
                                                     render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Jacket Size (Unisex)</FormLabel>
+                                                        <FormItem className="space-y-3">
+                                                            <FormLabel className="text-base font-semibold flex items-center gap-2">
+                                                                <Shirt className="h-4 w-4 text-primary" />
+                                                                Jacket Size (Unisex)
+                                                            </FormLabel>
                                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                                 <FormControl>
-                                                                    <SelectTrigger className="h-14">
+                                                                    <SelectTrigger className="h-14 w-full">
                                                                         <SelectValue placeholder="Select Size" />
                                                                     </SelectTrigger>
                                                                 </FormControl>
@@ -715,29 +758,29 @@ export function MembershipForm() {
                                                 control={form.control}
                                                 name="isDbnMember"
                                                 render={({ field }) => (
-                                                    <FormItem className="space-y-3 bg-muted/30 p-4 rounded-lg">
-                                                        <FormLabel>Are you a current DBN Member (2025 season)?</FormLabel>
+                                                    <FormItem className="space-y-4 bg-gradient-to-br from-primary/5 to-primary/10 p-6 rounded-xl border-2 border-primary/20">
+                                                        <FormLabel className="text-base font-semibold">Are you a current DBN Member (2025 season)?</FormLabel>
                                                         <FormControl>
                                                             <RadioGroup
                                                                 onValueChange={field.onChange}
                                                                 defaultValue={field.value}
                                                                 className="flex space-x-6"
                                                             >
-                                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                                <FormItem className="flex items-center space-x-3 space-y-0">
                                                                     <FormControl>
-                                                                        <RadioGroupItem value="yes" />
+                                                                        <RadioGroupItem value="yes" className="h-5 w-5" />
                                                                     </FormControl>
-                                                                    <FormLabel className="font-normal cursor-pointer">Yes</FormLabel>
+                                                                    <FormLabel className="font-medium text-base cursor-pointer">Yes</FormLabel>
                                                                 </FormItem>
-                                                                <FormItem className="flex items-center space-x-2 space-y-0">
+                                                                <FormItem className="flex items-center space-x-3 space-y-0">
                                                                     <FormControl>
-                                                                        <RadioGroupItem value="no" />
+                                                                        <RadioGroupItem value="no" className="h-5 w-5" />
                                                                     </FormControl>
-                                                                    <FormLabel className="font-normal cursor-pointer">No</FormLabel>
+                                                                    <FormLabel className="font-medium text-base cursor-pointer">No</FormLabel>
                                                                 </FormItem>
                                                             </RadioGroup>
                                                         </FormControl>
-                                                        <FormDescription>DBN = Dirty Bird Nest, Section 134</FormDescription>
+                                                        <FormDescription className="text-sm font-medium">DBN = Dirty Bird Nest, Section 134</FormDescription>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -775,7 +818,12 @@ export function MembershipForm() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <FloatingLabelInput label="Coupon Code (Optional)" icon={<Ticket className="h-4 w-4" />} {...field} />
+                                                            <FloatingLabelInput 
+                                                                label="Coupon Code (Optional)" 
+                                                                placeholder="Enter code" 
+                                                                icon={<Ticket className="h-4 w-4" />} 
+                                                                {...field} 
+                                                            />
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>

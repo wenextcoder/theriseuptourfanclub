@@ -121,3 +121,95 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* React Day Picker Styles */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: var(--primary);
+  --rdp-background-color: var(--primary);
+  margin: 0;
+}
+
+.rdp-months {
+  display: flex;
+  gap: 1rem;
+}
+
+.rdp-month {
+  margin: 0;
+}
+
+.rdp-caption {
+  display: none; /* Hide default caption as we have custom controls */
+}
+
+.rdp-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+.rdp-head_cell {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  padding: 0.5rem 0;
+}
+
+.rdp-cell {
+  padding: 2px;
+}
+
+.rdp-day {
+  width: var(--rdp-cell-size);
+  height: var(--rdp-cell-size);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.rdp-day:hover:not([disabled]) {
+  background-color: hsl(var(--accent));
+  transform: scale(1.05);
+}
+
+.rdp-day_selected {
+  background-color: var(--primary) !important;
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(159, 0, 1, 0.3);
+}
+
+.rdp-day_today {
+  background-color: hsl(var(--accent));
+  font-weight: 700;
+  position: relative;
+}
+
+.rdp-day_today::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--primary);
+}
+
+.rdp-day_outside {
+  opacity: 0.4;
+}
+
+.rdp-day_disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.rdp-day_disabled:hover {
+  background-color: transparent !important;
+  transform: none !important;
+}

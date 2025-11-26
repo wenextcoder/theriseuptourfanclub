@@ -1,6 +1,4 @@
 import * as React from "react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 
 export interface FloatingLabelInputProps
@@ -10,29 +8,60 @@ export interface FloatingLabelInputProps
 }
 
 const FloatingLabelInput = React.forwardRef<HTMLInputElement, FloatingLabelInputProps>(
-    ({ className, label, icon, ...props }, ref) => {
+    ({ className, label, icon, placeholder, ...props }, ref) => {
+        const [isFocused, setIsFocused] = React.useState(false)
+
+        const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+            setIsFocused(true)
+            props.onFocus?.(e)
+        }
+
+        const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+            setIsFocused(false)
+            props.onBlur?.(e)
+        }
+
         return (
-            <div className="relative">
-                <Input
-                    className={cn("peer pt-6 pb-1 h-14", icon && "pr-10", className)}
-                    placeholder=" "
-                    ref={ref}
-                    {...props}
-                />
-                <Label
-                    className={cn(
-                        "absolute left-3 top-4 text-muted-foreground transition-all duration-200 ease-out pointer-events-none origin-[0]",
-                        "peer-focus:top-1 peer-focus:text-xs peer-focus:text-primary",
-                        "peer-[:not(:placeholder-shown)]:top-1 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary"
-                    )}
-                >
+            <div className="relative w-full">
+                {/* Label always at top */}
+                <label className={cn(
+                    "block text-sm font-semibold mb-2 transition-colors duration-200",
+                    isFocused ? "text-primary" : "text-foreground"
+                )}>
                     {label}
-                </Label>
-                {icon && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none">
-                        {icon}
-                    </div>
-                )}
+                </label>
+                
+                {/* Input container */}
+                <div className="relative">
+                    <input
+                        ref={ref}
+                        placeholder={placeholder || `Enter ${label.toLowerCase()}`}
+                        className={cn(
+                            "w-full h-12 px-3 bg-transparent",
+                            "border-b-2 border-border",
+                            "text-base text-foreground",
+                            "transition-all duration-300 outline-none",
+                            "placeholder:text-muted-foreground/60",
+                            "focus:border-primary focus:shadow-[0_1px_0_0_rgba(159,0,1,0.2)]",
+                            "hover:border-primary/50",
+                            "disabled:opacity-50 disabled:cursor-not-allowed",
+                            icon && "pr-10",
+                            className
+                        )}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        {...props}
+                    />
+                    
+                    {icon && (
+                        <div className={cn(
+                            "absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none transition-all duration-300",
+                            isFocused ? "text-primary" : "text-muted-foreground"
+                        )}>
+                            {icon}
+                        </div>
+                    )}
+                </div>
             </div>
         )
     }
