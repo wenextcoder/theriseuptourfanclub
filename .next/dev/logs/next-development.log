@@ -1,84 +1,34 @@
-[00:00:02.092] Server  LOG      ✓ Ready in 1475ms
-[00:00:07.642] Server  LOG      ○ Compiling / ...
-[00:00:12.100] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:13.492] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:01:23.502] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:27.633] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:03:19.929] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:03:20.727] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:06:04.129] Browser ERROR   In HTML, %s cannot be a descendant of <%s>.
-This will cause a hydration error.%s <form> form 
+[00:00:02.194] Server  LOG      ✓ Ready in 1560ms
+[00:00:07.746] Server  LOG      ○ Compiling / ...
+[00:00:12.238] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:13.630] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[00:00:56.794] Browser LOG     === Creating Payment Intent ===
+[00:00:56.795] Browser LOG     Amount: 175
+[00:00:56.795] Browser LOG     Email: aminul20ikbd@gmail.com
+[00:00:57.716] Server  LOG     === Payment Intent API Called ===
+[00:00:57.720] Server  LOG     Amount: 175
+[00:00:57.723] Server  LOG     Metadata: {}
+[00:00:58.808] Server  LOG     ✅ Payment Intent created: "pi_3SYpTM2eZvKYlo2C13RumvQk"
+[00:00:58.918] Browser LOG     Response status: 200
+[00:00:58.918] Browser LOG     Payment Intent created: {"clientSecret":"pi_3SYpTM2eZvKYlo2C13RumvQk_secret_zU8jDBCMt5lJTDO8F6v1JFaF9","paymentIntentId":"pi_3SYpTM2eZvKYlo2C13RumvQk"}
+[00:00:58.918] Browser LOG     ✅ Client secret set successfully
+[00:01:24.594] Browser LOG     === Payment Submit Started ===
+[00:01:24.595] Browser LOG     Stripe loaded: true
+[00:01:24.595] Browser LOG     Elements loaded: true
+[00:01:24.595] Browser LOG     Confirming payment...
+[00:01:25.854] Browser LOG     Payment result: {"paymentIntent":{"amount":17500,"amount_details":{"tip":{}},"automatic_payment_methods":{"allow_redirects":"always","enabled":true},"canceled_at":null,"cancellation_reason":null,"capture_method":"automatic_async","client_secret":"pi_3SYpTM2eZvKYlo2C13RumvQk_secret_zU8jDBCMt5lJTDO8F6v1JFaF9","confirmation_method":"automatic","created":1764427804,"currency":"usd","description":null,"excluded_payment_method_types":null,"id":"pi_3SYpTM2eZvKYlo2C13RumvQk","last_payment_error":null,"livemode":false,"next_action":null,"object":"payment_intent","payment_method":"pm_1SYpTm2eZvKYlo2CiJVwxjoL","payment_method_configuration_details":{"id":"pmc_1JwXwt2eZvKYlo2CHV7mUH3p","parent":null},"payment_method_types":["card","link"],"processing":null,"receipt_email":null,"setup_future_usage":null,"shipping":null,"source":null,"status":"succeeded"}}
+[00:01:25.856] Browser LOG     ✅ Payment successful! pi_3SYpTM2eZvKYlo2C13RumvQk
+[00:01:26.856] Browser LOG     Payment successful, saving to database...
+[00:01:27.679] Browser LOG     Submission saved successfully: [{"address1":"Telikona, Kutipara,","address2":"111","birth_city_state":"Sunamganj","birth_date":"2000-11-10","city":"Sunamganj","coupon_code":"","created_at":"2025-11-29T14:50:33.441991+00:00","email":"aminul20ikbd@gmail.com","first_name":"Aminul","id":"3249a6e8-4d9f-448a-b6f9-61dd9364ac88","is_dbn_member":"no","jacket_size":"2X","last_name":"Islam","membership_level":"plus","membership_status":"new","middle_name":"ssss","nickname":"ssss","payment_intent_id":"pi_3SYpTM2eZvKYlo2C13RumvQk","phone":"1111111111","referral_source":"other","referrer_name":"","shirt_size":"XL","state":"ddd","terms_accepted":true,"total_price":175,"zip_code":"30000"}]
+[00:17:34.324] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:20:42.948] Server  LOG      ✓ Compiled in 55ms
+[00:20:51.472] Server  LOG      ✓ Compiled in 53ms
+[00:21:18.968] Server  LOG      ✓ Compiled in 90ms
+[00:22:01.388] Server  LOG      ✓ Compiled in 84ms
+[00:33:46.346] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:34:13.340] Server  LOG      ✓ Compiled in 431ms
+[00:34:14.129] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
 
-  ...
-    <RedirectBoundary>
-      <RedirectErrorBoundary router={{...}}>
-        <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} segmentPath={[...]} ...>
-          <SegmentViewNode type="page" pagePath="page.tsx">
-            <SegmentTrieNode>
-            <Home>
-              <main className="min-h-scre...">
-                <MembershipForm>
-                  <div className="w-full max...">
-                    <div>
-                    <Card className="shadow-2xl...">
-                      <div data-slot="card" className="text-card-...">
-                        <CardHeader>
-                        <CardContent className="p-6 md:p-1...">
-                          <div data-slot="card-content" className="p-6 md:p-1...">
-                            <FormProvider control={{...}} subscribe={function subscribe} trigger={function trigger} ...>
->                             <form onSubmit={function} className="space-y-8">
-                                ...
-                                  <Elements options={{...}} stripe={Promise}>
-                                    <PaymentForm amount={75} onSuccess={function handlePaymentSuccess} ...>
->                                     <form onSubmit={function handleSubmit} className="space-y-6">
-                                ...
-          ...
-        ...
-
-[00:06:04.129] Browser ERROR   <%s> cannot contain a nested %s.
-See this log for the ancestor stack trace. form <form>
-[00:06:34.635] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:06:35.121] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-%s%s https://react.dev/link/hydration-mismatch 
-
-  ...
-    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
-      <AppDevOverlayErrorBoundary globalError={[...]}>
-        <ReplaySsrOnlyErrors>
-        <DevRootHTTPAccessFallbackBoundary>
-          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
-            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
-              <RedirectBoundary>
-                <RedirectErrorBoundary router={{...}}>
-                  <Head>
-                  <__next_root_layout_boundary__>
-                    <SegmentViewNode type="layout" pagePath="layout.tsx">
-                      <SegmentTrieNode>
-                      <link>
-                      <script>
-                      <RootLayout>
-                        <html lang="en">
-                          <body
-                            className="montserrat_bba129a6-module__TUV0iq__variable font-sans antialiased"
--                           data-new-gr-c-s-check-loaded="14.1264.0"
--                           data-gr-ext-installed=""
-                          >
-                  ...
-
-[00:06:35.329] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:08:26.717] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:11:31.794] Server  LOG      ✓ Compiled in 111ms
-[00:11:43.754] Server  LOG      ✓ Compiled in 199ms
-[00:12:00.831] Server  LOG      ✓ Compiled in 170ms
-[00:12:33.379] Server  LOG      ✓ Compiled in 148ms
-[00:16:44.404] Server  LOG      ✓ Compiled in 50ms
-[00:16:44.591] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+Check the render method of `AdminPage`. 
+[00:35:58.582] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:35:59.493] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.

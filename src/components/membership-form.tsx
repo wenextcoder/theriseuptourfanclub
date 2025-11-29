@@ -188,6 +188,10 @@ export function MembershipForm() {
 
     const createPaymentIntent = async () => {
         setIsProcessing(true);
+        console.log('=== Creating Payment Intent ===');
+        console.log('Amount:', price);
+        console.log('Email:', form.getValues("email"));
+        
         try {
             const response = await fetch("/api/create-payment-intent", {
                 method: "POST",
@@ -202,14 +206,31 @@ export function MembershipForm() {
                 }),
             });
 
+            console.log('Response status:', response.status);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error:', errorText);
+                throw new Error(`Server error: ${response.status}`);
+            }
+
             const data = await response.json();
+            console.log('Payment Intent created:', data);
+            
             if (data.clientSecret) {
                 setClientSecret(data.clientSecret);
                 setPaymentIntentId(data.paymentIntentId);
+                console.log('✅ Client secret set successfully');
+            } else if (data.error) {
+                console.error('API returned error:', data.error);
+                throw new Error(data.error);
+            } else {
+                console.error('No clientSecret in response');
+                throw new Error('No client secret received');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error creating payment intent:", error);
-            alert("Failed to initialize payment. Please try again.");
+            alert(`Failed to initialize payment: ${error.message}\n\nPlease check:\n1. Your .env.local file has Stripe keys\n2. The API route is working\n3. Stripe keys are valid`);
         } finally {
             setIsProcessing(false);
         }
@@ -279,6 +300,7 @@ export function MembershipForm() {
 
     const handlePaymentError = (error: string) => {
         console.error('Payment error:', error);
+        // Don't do anything - stay on payment page for retry
     };
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
