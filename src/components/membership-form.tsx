@@ -5,6 +5,10 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { supabase } from "@/lib/supabase"
+import { stripePromise } from "@/lib/stripe"
+import { Elements } from "@stripe/react-stripe-js"
+import { PaymentForm } from "@/components/payment-form"
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -98,12 +102,19 @@ const steps = [
     { id: 2, title: "Address & Origin", icon: MapPin },
     { id: 3, title: "Membership", icon: CreditCard },
     { id: 4, title: "Review & Terms", icon: Check },
+    { id: 5, title: "Payment", icon: CreditCard },
 ];
 
 export function MembershipForm() {
     const [currentStep, setCurrentStep] = useState(1);
     const [price, setPrice] = useState(0);
     const [direction, setDirection] = useState(0);
+    const [clientSecret, setClientSecret] = useState("");
+    const [paymentIntentId, setPaymentIntentId] = useState("");
+    const [formData, setFormData] = useState<any>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -155,6 +166,9 @@ export function MembershipForm() {
             case 4:
                 fieldsToValidate = ["termsAccepted"];
                 break;
+            case 5:
+                // Payment step - no validation needed
+                return true;
         }
         const result = await form.trigger(fieldsToValidate);
         return result;
@@ -163,8 +177,41 @@ export function MembershipForm() {
     const nextStep = async () => {
         const isValid = await validateStep(currentStep);
         if (isValid) {
+            // If moving from step 4 to 5 (payment), create payment intent
+            if (currentStep === 4 && price > 0) {
+                await createPaymentIntent();
+            }
             setDirection(1);
             setCurrentStep((prev) => Math.min(prev + 1, steps.length));
+        }
+    };
+
+    const createPaymentIntent = async () => {
+        setIsProcessing(true);
+        try {
+            const response = await fetch("/api/create-payment-intent", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    amount: price,
+                    metadata: {
+                        email: form.getValues("email"),
+                        name: `${form.getValues("firstName")} ${form.getValues("lastName")}`,
+                        membershipLevel: form.getValues("membershipLevel"),
+                    },
+                }),
+            });
+
+            const data = await response.json();
+            if (data.clientSecret) {
+                setClientSecret(data.clientSecret);
+                setPaymentIntentId(data.paymentIntentId);
+            }
+        } catch (error) {
+            console.error("Error creating payment intent:", error);
+            alert("Failed to initialize payment. Please try again.");
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -173,9 +220,71 @@ export function MembershipForm() {
         setCurrentStep((prev) => Math.max(prev - 1, 1));
     };
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values);
-        alert("Form submitted! (Check console for data)");
+    const handlePaymentSuccess = async () => {
+        if (isSubmitting) return; // Prevent double submission
+        
+        setIsSubmitting(true);
+        const values = form.getValues();
+        
+        console.log('Payment successful, saving to database...');
+        
+        try {
+            const { data, error } = await supabase
+                .from('memberships')
+                .insert([
+                    {
+                        first_name: values.firstName,
+                        middle_name: values.middleName,
+                        last_name: values.lastName,
+                        nickname: values.nickname,
+                        email: values.email,
+                        phone: values.phone,
+                        birth_date: values.birthDate.toISOString().split('T')[0],
+                        address1: values.address1,
+                        address2: values.address2,
+                        city: values.city,
+                        state: values.state,
+                        zip_code: values.zipCode,
+                        referral_source: values.referralSource,
+                        referrer_name: values.referrerName,
+                        is_dbn_member: values.isDbnMember,
+                        birth_city_state: values.birthCityState,
+                        membership_status: values.membershipStatus,
+                        membership_level: values.membershipLevel,
+                        shirt_size: values.shirtSize,
+                        jacket_size: values.jacketSize,
+                        coupon_code: values.couponCode,
+                        terms_accepted: values.termsAccepted,
+                        total_price: price,
+                        payment_intent_id: paymentIntentId,
+                    }
+                ])
+                .select();
+
+            if (error) {
+                console.error('Error submitting form:', error);
+                alert('Payment successful but failed to save application. Please contact support with payment ID: ' + paymentIntentId);
+            } else {
+                console.log('Submission saved successfully:', data);
+                setIsSubmitted(true);
+                // Don't reset form yet - show success message
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Payment successful but an error occurred saving your application. Please contact support with payment ID: ' + paymentIntentId);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handlePaymentError = (error: string) => {
+        console.error('Payment error:', error);
+    };
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        // Store form data and move to payment step
+        setFormData(values);
+        nextStep();
     }
 
     const variants = {
@@ -192,6 +301,105 @@ export function MembershipForm() {
             opacity: 0,
         }),
     };
+
+    // Success Screen
+    if (isSubmitted) {
+        return (
+            <div className="w-full max-w-3xl mx-auto">
+                <Card className="shadow-2xl border-none overflow-hidden bg-white/90 backdrop-blur-sm">
+                    <CardHeader className="text-center space-y-4 bg-gradient-to-r from-green-50 via-green-100 to-green-50 pb-8 pt-8">
+                        <div className="flex justify-center">
+                            <div className="h-20 w-20 rounded-full bg-green-500 flex items-center justify-center animate-in zoom-in-50 duration-500">
+                                <CheckCircle2 className="h-12 w-12 text-white" />
+                            </div>
+                        </div>
+                        <CardTitle className="text-3xl font-bold text-green-700 tracking-tight">
+                            Payment Successful!
+                        </CardTitle>
+                        <CardDescription className="text-lg font-medium text-green-600">
+                            Welcome to The RISEUP Tour Fan Club
+                        </CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="p-8 md:p-12">
+                        <div className="space-y-6 text-center">
+                            <div className="space-y-2">
+                                <h3 className="text-2xl font-bold text-primary">Thank You!</h3>
+                                <p className="text-muted-foreground text-lg">
+                                    Your membership application has been submitted successfully.
+                                </p>
+                            </div>
+
+                            <div className="bg-primary/5 p-6 rounded-xl border-2 border-primary/20">
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">Membership Level:</span>
+                                        <span className="font-bold capitalize">{form.getValues("membershipLevel")}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">Amount Paid:</span>
+                                        <span className="font-bold text-green-600">${price.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-muted-foreground">Payment ID:</span>
+                                        <span className="font-mono text-xs">{paymentIntentId}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 pt-4">
+                                <div className="flex items-start gap-3 text-left">
+                                    <Mail className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                                    <div>
+                                        <p className="font-semibold">Check Your Email</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            A confirmation email has been sent to <strong>{form.getValues("email")}</strong>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-3 text-left">
+                                    <Ticket className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                                    <div>
+                                        <p className="font-semibold">What's Next?</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Your membership items will be processed and shipped within 2-3 weeks.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-3 text-left">
+                                    <CreditCard className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                                    <div>
+                                        <p className="font-semibold">Receipt</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Stripe will send a payment receipt to your email shortly.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-6">
+                                <Button 
+                                    onClick={() => {
+                                        setIsSubmitted(false);
+                                        form.reset();
+                                        setCurrentStep(1);
+                                        setClientSecret("");
+                                        setPaymentIntentId("");
+                                    }}
+                                    className="w-full h-14 text-lg"
+                                    variant="outline"
+                                >
+                                    Submit Another Application
+                                </Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full max-w-5xl mx-auto">
@@ -383,26 +591,26 @@ export function MembershipForm() {
                                                 />
                                             </div>
 
-                                            <FormField
-                                                control={form.control}
+                                                    <FormField
+                                                        control={form.control}
                                                 name="birthDate"
-                                                render={({ field }) => (
+                                                        render={({ field }) => (
                                                     <FormItem className="space-y-3">
                                                         <FormLabel className="text-base font-semibold">Date of Birth</FormLabel>
-                                                        <FormControl>
+                                                                    <FormControl>
                                                             <SegmentedDateInput
                                                                 value={field.value}
                                                                 onChange={field.onChange}
                                                                 disabled={false}
                                                             />
-                                                        </FormControl>
+                                                                    </FormControl>
                                                         <FormDescription className="text-xs mt-8">
                                                             Must be 18 years or older. Enter as MM/DD/YYYY
                                                         </FormDescription>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )}
+                                                    />
                                         </div>
                                     )}
 
@@ -788,6 +996,45 @@ export function MembershipForm() {
                                         </div>
                                     )}
 
+                                    {currentStep === 5 && (
+                                        <div className="space-y-6">
+                                            <div className="text-center space-y-2 mb-6">
+                                                <h3 className="text-2xl font-bold text-primary">Complete Your Payment</h3>
+                                                <p className="text-muted-foreground">
+                                                    Secure payment powered by Stripe
+                                                </p>
+                                            </div>
+
+                                            {clientSecret && stripePromise ? (
+                                                <Elements
+                                                    options={{
+                                                        clientSecret,
+                                                        appearance: {
+                                                            theme: 'stripe',
+                                                            variables: {
+                                                                colorPrimary: '#9F0001',
+                                                            },
+                                                        },
+                                                    }}
+                                                    stripe={stripePromise}
+                                                >
+                                                    <PaymentForm
+                                                        amount={price}
+                                                        onSuccess={handlePaymentSuccess}
+                                                        onError={handlePaymentError}
+                                                    />
+                                                </Elements>
+                                            ) : (
+                                                <div className="flex items-center justify-center p-8">
+                                                    <div className="text-center">
+                                                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                                                        <p className="text-muted-foreground">Initializing secure payment...</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     {currentStep === 4 && (
                                         <div className="space-y-6">
                                             <div className="bg-muted/30 p-6 rounded-lg space-y-4">
@@ -870,6 +1117,7 @@ export function MembershipForm() {
                                 </motion.div>
                             </AnimatePresence>
 
+                            {currentStep < 5 && (
                             <div className="flex justify-between pt-8 border-t">
                                 <Button
                                     type="button"
@@ -881,16 +1129,35 @@ export function MembershipForm() {
                                     <ChevronLeft className="mr-2 h-4 w-4" /> Back
                                 </Button>
 
-                                {currentStep < steps.length ? (
-                                    <Button type="button" onClick={nextStep} className="w-32">
+                                    {currentStep < 4 ? (
+                                        <Button type="button" onClick={nextStep} className="w-32" disabled={isProcessing}>
                                         Next <ChevronRight className="ml-2 h-4 w-4" />
                                     </Button>
                                 ) : (
-                                    <Button type="submit" className="w-40 bg-primary hover:bg-primary/90 text-lg">
-                                        Submit <Check className="ml-2 h-4 w-4" />
+                                        <Button 
+                                            type="submit" 
+                                            className="w-52 bg-primary hover:bg-primary/90 text-lg"
+                                            disabled={isProcessing}
+                                        >
+                                            {isProcessing ? "Processing..." : "Proceed to Payment"}
+                                            <ChevronRight className="ml-2 h-4 w-4" />
                                     </Button>
                                 )}
                             </div>
+                            )}
+
+                            {currentStep === 5 && (
+                                <div className="flex justify-start pt-8 border-t">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={prevStep}
+                                        className="w-32"
+                                    >
+                                        <ChevronLeft className="mr-2 h-4 w-4" /> Back
+                                    </Button>
+                                </div>
+                            )}
                         </form>
                     </Form>
                 </CardContent>

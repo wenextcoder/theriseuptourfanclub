@@ -40,6 +40,18 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/api/create-payment-intent",
+      "regex": "^/api/create\\-payment\\-intent(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/create\\-payment\\-intent(?:/)?$"
+    },
+    {
       "page": "/favicon.ico",
       "regex": "^/favicon\\.ico(?:/)?$",
       "routeKeys": {},

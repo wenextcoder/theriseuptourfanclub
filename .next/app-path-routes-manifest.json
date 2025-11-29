@@ -1,6 +1,8 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
+  "/admin/page": "/admin",
+  "/api/create-payment-intent/route": "/api/create-payment-intent",
   "/favicon.ico/route": "/favicon.ico",
   "/page": "/"
 }
