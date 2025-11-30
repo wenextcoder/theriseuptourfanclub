@@ -428,7 +428,6 @@ export function MembershipForm() {
             {/* Header & Progress */}
             <div className="mb-8 space-y-4">
                 <div className="flex justify-between items-end px-2">
-                    <h2 className="text-2xl font-bold text-primary hidden md:block">Application Form</h2>
                     <span className="text-sm font-medium text-muted-foreground ml-auto">
                         Step {currentStep} of {steps.length}
                     </span>

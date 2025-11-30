@@ -1,34 +1,11 @@
-[00:00:02.194] Server  LOG      ✓ Ready in 1560ms
-[00:00:07.746] Server  LOG      ○ Compiling / ...
-[00:00:12.238] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:13.630] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:00:56.794] Browser LOG     === Creating Payment Intent ===
-[00:00:56.795] Browser LOG     Amount: 175
-[00:00:56.795] Browser LOG     Email: aminul20ikbd@gmail.com
-[00:00:57.716] Server  LOG     === Payment Intent API Called ===
-[00:00:57.720] Server  LOG     Amount: 175
-[00:00:57.723] Server  LOG     Metadata: {}
-[00:00:58.808] Server  LOG     ✅ Payment Intent created: "pi_3SYpTM2eZvKYlo2C13RumvQk"
-[00:00:58.918] Browser LOG     Response status: 200
-[00:00:58.918] Browser LOG     Payment Intent created: {"clientSecret":"pi_3SYpTM2eZvKYlo2C13RumvQk_secret_zU8jDBCMt5lJTDO8F6v1JFaF9","paymentIntentId":"pi_3SYpTM2eZvKYlo2C13RumvQk"}
-[00:00:58.918] Browser LOG     ✅ Client secret set successfully
-[00:01:24.594] Browser LOG     === Payment Submit Started ===
-[00:01:24.595] Browser LOG     Stripe loaded: true
-[00:01:24.595] Browser LOG     Elements loaded: true
-[00:01:24.595] Browser LOG     Confirming payment...
-[00:01:25.854] Browser LOG     Payment result: {"paymentIntent":{"amount":17500,"amount_details":{"tip":{}},"automatic_payment_methods":{"allow_redirects":"always","enabled":true},"canceled_at":null,"cancellation_reason":null,"capture_method":"automatic_async","client_secret":"pi_3SYpTM2eZvKYlo2C13RumvQk_secret_zU8jDBCMt5lJTDO8F6v1JFaF9","confirmation_method":"automatic","created":1764427804,"currency":"usd","description":null,"excluded_payment_method_types":null,"id":"pi_3SYpTM2eZvKYlo2C13RumvQk","last_payment_error":null,"livemode":false,"next_action":null,"object":"payment_intent","payment_method":"pm_1SYpTm2eZvKYlo2CiJVwxjoL","payment_method_configuration_details":{"id":"pmc_1JwXwt2eZvKYlo2CHV7mUH3p","parent":null},"payment_method_types":["card","link"],"processing":null,"receipt_email":null,"setup_future_usage":null,"shipping":null,"source":null,"status":"succeeded"}}
-[00:01:25.856] Browser LOG     ✅ Payment successful! pi_3SYpTM2eZvKYlo2C13RumvQk
-[00:01:26.856] Browser LOG     Payment successful, saving to database...
-[00:01:27.679] Browser LOG     Submission saved successfully: [{"address1":"Telikona, Kutipara,","address2":"111","birth_city_state":"Sunamganj","birth_date":"2000-11-10","city":"Sunamganj","coupon_code":"","created_at":"2025-11-29T14:50:33.441991+00:00","email":"aminul20ikbd@gmail.com","first_name":"Aminul","id":"3249a6e8-4d9f-448a-b6f9-61dd9364ac88","is_dbn_member":"no","jacket_size":"2X","last_name":"Islam","membership_level":"plus","membership_status":"new","middle_name":"ssss","nickname":"ssss","payment_intent_id":"pi_3SYpTM2eZvKYlo2C13RumvQk","phone":"1111111111","referral_source":"other","referrer_name":"","shirt_size":"XL","state":"ddd","terms_accepted":true,"total_price":175,"zip_code":"30000"}]
-[00:17:34.324] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:20:42.948] Server  LOG      ✓ Compiled in 55ms
-[00:20:51.472] Server  LOG      ✓ Compiled in 53ms
-[00:21:18.968] Server  LOG      ✓ Compiled in 90ms
-[00:22:01.388] Server  LOG      ✓ Compiled in 84ms
-[00:33:46.346] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:34:13.340] Server  LOG      ✓ Compiled in 431ms
-[00:34:14.129] Browser ERROR   Each child in a list should have a unique "key" prop.%s%s See https://react.dev/link/warning-keys for more information. 
-
-Check the render method of `AdminPage`. 
-[00:35:58.582] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:35:59.493] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[00:00:02.272] Server  LOG      ✓ Ready in 1612ms
+[00:00:09.361] Server  LOG      ○ Compiling / ...
+[00:00:14.571] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:15.002] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[00:00:15.739] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:16.031] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[00:00:17.166] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:17.406] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[00:00:32.395] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:33.607] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
+[00:01:00.091] Server  LOG      ✓ Compiled in 120ms
