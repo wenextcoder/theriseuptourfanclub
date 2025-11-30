@@ -1,11 +1,58 @@
-[00:00:02.272] Server  LOG      ✓ Ready in 1612ms
-[00:00:09.361] Server  LOG      ○ Compiling / ...
-[00:00:14.571] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:15.002] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:00:15.739] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:16.031] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:00:17.166] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:17.406] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:00:32.395] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:33.607] Browser WARN    You may test your Stripe.js integration over HTTP. However, live Stripe.js integrations must use HTTPS.
-[00:01:00.091] Server  LOG      ✓ Compiled in 120ms
+[00:00:00.739] Server  LOG      ✓ Ready in 556ms
+[00:00:05.431] Server  LOG      ○ Compiling / ...
+[00:00:08.363] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:08.720] Browser ERROR   uncaughtError: Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <div className="w-full" style={{opacity:0, ...}} ref={function useMotionRef.useCallback}>
+      <div className="space-y-6">
+        <div className="grid grid-...">
+          <FormField control={{...}} name="firstName" render={function render}>
+            <Controller control={{...}} name="firstName" render={function render}>
+              <FormItem>
+                <div data-slot="form-item" className="grid gap-2">
+                  <FormControl>
+                    <Slot.Slot data-slot="form-control" id="_R_idmklrl..." aria-describedby="_R_idmklrl..." ...>
+                      <Slot.SlotClone data-slot="form-control" id="_R_idmklrl..." aria-describedby="_R_idmklrl..." ...>
+                        <FloatingLabelInput label="First Name" placeholder="John" icon={<User>} name="firstName" value="" ...>
+                          <div className="relative w...">
+                            <label>
+                            <div className="relative">
+                              <input>
+                              <div
++                               className="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none transition-al..."
+-                               className={null}
+-                               data-lastpass-icon-root=""
+-                               style={{position:"relative",height:"0px",width:"0px",display:"initial",float:"left"}}
+                              >
+                                <User className="h-4 w-4">
++                                 <svg
++                                   ref={null}
++                                   xmlns="http://www.w3.org/2000/svg"
++                                   width={24}
++                                   height={24}
++                                   viewBox="0 0 24 24"
++                                   fill="none"
++                                   stroke="currentColor"
++                                   strokeWidth={2}
++                                   strokeLinecap="round"
++                                   strokeLinejoin="round"
++                                   className="lucide lucide-user h-4 w-4"
++                                   aria-hidden="true"
++                                 >
+                  ...
+          ...
+        ...
+
+[00:00:17.847] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:29.331] Server  LOG      ✓ Compiled in 169ms

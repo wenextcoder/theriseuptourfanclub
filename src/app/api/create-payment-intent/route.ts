@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 export async function POST(req: NextRequest) {
   try {
     console.log('=== Payment Intent API Called ===')
-    
+
     // Check if Stripe is configured
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error('❌ STRIPE_SECRET_KEY not found in environment variables')
